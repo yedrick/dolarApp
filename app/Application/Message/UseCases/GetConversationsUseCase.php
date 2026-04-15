@@ -35,6 +35,8 @@ final class GetConversationsUseCase
                     'content' => $lastMessage->content,
                     'created_at' => $lastMessage->created_at->toIso8601String(),
                     'is_mine' => $lastMessage->sender_id === $userId,
+                    'is_read' => $lastMessage->is_read,
+                    'image_path' => $lastMessage->image_path,
                 ] : null,
                 'last_message_at' => $conv->last_message_at?->toIso8601String(),
             ];

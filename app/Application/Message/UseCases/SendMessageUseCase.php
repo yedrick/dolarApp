@@ -14,7 +14,7 @@ final class SendMessageUseCase
         private readonly OfferRepositoryInterface $offerRepository,
     ) {}
 
-    public function execute(int $senderId, int $receiverId, int $offerId, string $content, ?float $amount = null): array
+    public function execute(int $senderId, int $receiverId, int $offerId, string $content, ?float $amount = null, ?string $imagePath = null): array
     {
         // Buscar o crear conversación
         $conversation = $this->messageRepository->findConversation($senderId, $receiverId, $offerId);
@@ -39,7 +39,7 @@ final class SendMessageUseCase
         }
 
         // Enviar mensaje
-        $message = $this->messageRepository->sendMessage($conversation->id, $senderId, $content);
+        $message = $this->messageRepository->sendMessage($conversation->id, $senderId, $content, $imagePath);
 
         return [
             'conversation_id' => $conversation->id,
@@ -47,6 +47,7 @@ final class SendMessageUseCase
                 'id' => $message->id,
                 'content' => $message->content,
                 'sender_id' => $message->sender_id,
+                'image_path' => $message->image_path,
                 'created_at' => $message->created_at->toIso8601String(),
             ],
         ];

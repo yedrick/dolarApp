@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
     // Chat y Mensajes
     Route::get('/chat',               [ChatWebController::class, 'index'])->name('chat.index');
     Route::get('/chat/{id}',          [ChatWebController::class, 'show'])->name('chat.show');
+    Route::get('/chat/{id}/messages', [ChatWebController::class, 'getMessages'])->name('chat.messages');
     Route::post('/chat/start',        [ChatWebController::class, 'startConversation'])->name('chat.start');
     Route::post('/chat/{id}/send',    [ChatWebController::class, 'send'])->name('chat.send');
 });

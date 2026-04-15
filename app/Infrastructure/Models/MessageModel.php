@@ -14,6 +14,7 @@ class MessageModel extends Model
         'sender_id',
         'content',
         'is_read',
+        'image_path',
     ];
 
     protected $casts = [

@@ -1,7 +1,6 @@
-@extends('layouts.app')
-@section('title', 'Mensajes')
+<?php $__env->startSection('title', 'Mensajes'); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="chat-list-container">
     <div class="chat-list-header">
         <div class="chat-list-title-wrapper">
@@ -12,10 +11,10 @@
             </div>
             <div>
                 <h1 class="chat-list-title">Mensajes</h1>
-                <p class="chat-list-subtitle">{{ count($conversations) }} conversaciones activas</p>
+                <p class="chat-list-subtitle"><?php echo e(count($conversations)); ?> conversaciones activas</p>
             </div>
         </div>
-        <a href="{{ route('offers.index') }}" class="btn btn--primary btn--sm">
+        <a href="<?php echo e(route('offers.index')); ?>" class="btn btn--primary btn--sm">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.4rem;">
                 <line x1="12" y1="5" x2="12" y2="19"/>
                 <line x1="5" y1="12" x2="19" y2="12"/>
@@ -24,7 +23,7 @@
         </a>
     </div>
 
-    @if(empty($conversations))
+    <?php if(empty($conversations)): ?>
         <div class="chat-empty-state">
             <div class="chat-empty-icon">
                 <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -33,7 +32,7 @@
             </div>
             <h3 class="chat-empty-title">No tienes conversaciones aún</h3>
             <p class="chat-empty-text">Encuentra ofertas en el mercado y contacta con vendedores o compradores</p>
-            <a href="{{ route('offers.index') }}" class="btn btn--primary btn--lg">
+            <a href="<?php echo e(route('offers.index')); ?>" class="btn btn--primary btn--lg">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.4rem;">
                     <line x1="12" y1="5" x2="12" y2="19"/>
                     <line x1="5" y1="12" x2="19" y2="12"/>
@@ -41,56 +40,60 @@
                 Ver ofertas disponibles
             </a>
         </div>
-    @else
+    <?php else: ?>
         <div class="conversations-wrapper">
-            @foreach($conversations as $conv)
-                <a href="{{ route('chat.show', $conv['id']) }}" class="conversation-card {{ !$conv['last_message']['is_read'] && !$conv['last_message']['is_mine'] ? 'conversation-card--unread' : '' }}">
+            <?php $__currentLoopData = $conversations; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $conv): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <a href="<?php echo e(route('chat.show', $conv['id'])); ?>" class="conversation-card <?php echo e(!$conv['last_message']['is_read'] && !$conv['last_message']['is_mine'] ? 'conversation-card--unread' : ''); ?>">
                     <div class="conversation-avatar-wrapper">
                         <div class="conversation-avatar">
-                            {{ strtoupper(substr($conv['other_user']['name'], 0, 1)) }}
+                            <?php echo e(strtoupper(substr($conv['other_user']['name'], 0, 1))); ?>
+
                         </div>
                         <div class="conversation-status online"></div>
                     </div>
                     <div class="conversation-content">
                         <div class="conversation-main">
                             <div class="conversation-top">
-                                <h3 class="conversation-name">{{ $conv['other_user']['name'] }}</h3>
-                                @if($conv['last_message'])
-                                    <span class="conversation-time {{ !$conv['last_message']['is_read'] && !$conv['last_message']['is_mine'] ? 'conversation-time--unread' : '' }}">
-                                        {{ \Carbon\Carbon::parse($conv['last_message_at'])->diffForHumans(short: true) }}
+                                <h3 class="conversation-name"><?php echo e($conv['other_user']['name']); ?></h3>
+                                <?php if($conv['last_message']): ?>
+                                    <span class="conversation-time <?php echo e(!$conv['last_message']['is_read'] && !$conv['last_message']['is_mine'] ? 'conversation-time--unread' : ''); ?>">
+                                        <?php echo e(\Carbon\Carbon::parse($conv['last_message_at'])->diffForHumans(short: true)); ?>
+
                                     </span>
-                                @endif
+                                <?php endif; ?>
                             </div>
                             <div class="conversation-offer-info">
-                                <span class="offer-badge badge--{{ $conv['offer']['type'] === 'venta' ? 'sell' : 'buy' }}">
-                                    {{ strtoupper($conv['offer']['type']) }}
+                                <span class="offer-badge badge--<?php echo e($conv['offer']['type'] === 'venta' ? 'sell' : 'buy'); ?>">
+                                    <?php echo e(strtoupper($conv['offer']['type'])); ?>
+
                                 </span>
-                                <span class="offer-price">Bs. {{ number_format($conv['offer']['price'], 2) }}</span>
+                                <span class="offer-price">Bs. <?php echo e(number_format($conv['offer']['price'], 2)); ?></span>
                             </div>
                         </div>
                         <div class="conversation-bottom">
-                            @if($conv['last_message'])
-                                <p class="conversation-message {{ !$conv['last_message']['is_read'] && !$conv['last_message']['is_mine'] ? 'conversation-message--unread' : '' }}">
-                                    @if($conv['last_message']['is_mine'])
+                            <?php if($conv['last_message']): ?>
+                                <p class="conversation-message <?php echo e(!$conv['last_message']['is_read'] && !$conv['last_message']['is_mine'] ? 'conversation-message--unread' : ''); ?>">
+                                    <?php if($conv['last_message']['is_mine']): ?>
                                         <span class="message-prefix">Tú:</span>
-                                    @endif
-                                    @if($conv['last_message']['image_path'])
+                                    <?php endif; ?>
+                                    <?php if($conv['last_message']['image_path']): ?>
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline; vertical-align: middle; margin-right: 4px;">
                                             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                                             <circle cx="8.5" cy="8.5" r="1.5"></circle>
                                             <polyline points="21 15 16 10 5 21"></polyline>
                                         </svg>
                                         Foto
-                                    @else
-                                        {{ Str::limit($conv['last_message']['content'], 55) }}
-                                    @endif
+                                    <?php else: ?>
+                                        <?php echo e(Str::limit($conv['last_message']['content'], 55)); ?>
+
+                                    <?php endif; ?>
                                 </p>
-                                @if(!$conv['last_message']['is_read'] && !$conv['last_message']['is_mine'])
+                                <?php if(!$conv['last_message']['is_read'] && !$conv['last_message']['is_mine']): ?>
                                     <span class="unread-badge">Nuevo</span>
-                                @endif
-                            @else
+                                <?php endif; ?>
+                            <?php else: ?>
                                 <p class="conversation-message conversation-message--empty">Sin mensajes aún</p>
-                            @endif
+                            <?php endif; ?>
                         </div>
                     </div>
                     <div class="conversation-arrow">
@@ -99,11 +102,11 @@
                         </svg>
                     </div>
                 </a>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
-    @endif
+    <?php endif; ?>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
 <style>
 .chat-list-container {
@@ -397,3 +400,5 @@
     }
 }
 </style>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\collatech\dolarapp\resources\views/chat/index.blade.php ENDPATH**/ ?>

@@ -26,6 +26,7 @@ final class GetMessagesUseCase
                 'sender_id' => $msg->sender_id,
                 'sender_name' => $msg->sender->name,
                 'is_read' => $msg->is_read,
+                'image_path' => $msg->image_path,
                 'created_at' => $msg->created_at->toIso8601String(),
             ];
         }, $messages);

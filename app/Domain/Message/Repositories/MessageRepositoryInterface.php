@@ -17,7 +17,7 @@ interface MessageRepositoryInterface
 
     public function getConversationMessages(int $conversationId): array;
 
-    public function sendMessage(int $conversationId, int $senderId, string $content): MessageModel;
+    public function sendMessage(int $conversationId, int $senderId, string $content, ?string $imagePath = null): MessageModel;
 
     public function markAsRead(int $conversationId, int $userId): void;
 

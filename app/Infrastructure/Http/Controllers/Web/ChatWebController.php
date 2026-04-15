@@ -9,6 +9,7 @@ use App\Application\Message\UseCases\GetMessagesUseCase;
 use App\Application\Message\UseCases\SendMessageUseCase;
 use App\Infrastructure\Http\Controllers\BaseController;
 use App\Infrastructure\Models\ConversationModel;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -45,6 +46,23 @@ class ChatWebController extends BaseController
         return view('chat.show', compact('conversation', 'otherUser', 'messages'));
     }
 
+    public function getMessages(int $id): JsonResponse
+    {
+        $conversation = ConversationModel::findOrFail($id);
+
+        // Verificar que el usuario es participante
+        if ($conversation->user_one_id !== auth()->id() && $conversation->user_two_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $messages = $this->getMessages->execute($id, auth()->id());
+
+        return response()->json([
+            'messages' => $messages,
+            'count' => count($messages)
+        ]);
+    }
+
     public function startConversation(Request $request): RedirectResponse
     {
         $request->validate([
@@ -78,7 +96,8 @@ class ChatWebController extends BaseController
     public function send(Request $request, int $id): RedirectResponse
     {
         $request->validate([
-            'message' => 'required|string|max:1000',
+            'message' => 'nullable|string|max:1000',
+            'image' => 'nullable|image|max:5120', // Max 5MB
         ]);
 
         $conversation = ConversationModel::findOrFail($id);
@@ -90,11 +109,24 @@ class ChatWebController extends BaseController
 
         $otherUser = $conversation->otherUser(auth()->id());
 
+        // Manejar subida de imagen
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('chat-images', 'public');
+        }
+
+        // Validar que hay mensaje o imagen
+        $content = $request->input('message', '');
+        if (empty($content) && !$imagePath) {
+            return back()->with('error', 'Debes escribir un mensaje o adjuntar una imagen');
+        }
+
         $this->sendMessage->execute(
             senderId: auth()->id(),
             receiverId: $otherUser->id,
             offerId: $conversation->offer_id,
-            content: $request->input('message')
+            content: $content,
+            imagePath: $imagePath
         );
 
         return back()->with('success', 'Mensaje enviado');

@@ -53,12 +53,13 @@ final class EloquentMessageRepository implements MessageRepositoryInterface
             ->all();
     }
 
-    public function sendMessage(int $conversationId, int $senderId, string $content): MessageModel
+    public function sendMessage(int $conversationId, int $senderId, string $content, ?string $imagePath = null): MessageModel
     {
         $message = MessageModel::create([
             'conversation_id' => $conversationId,
             'sender_id' => $senderId,
             'content' => $content,
+            'image_path' => $imagePath,
         ]);
 
         ConversationModel::where('id', $conversationId)->update([

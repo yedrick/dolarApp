@@ -1,10 +1,9 @@
-@extends('layouts.app')
-@section('title', 'Chat con ' . $otherUser->name)
+<?php $__env->startSection('title', 'Chat con ' . $otherUser->name); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="chat-container">
     <div class="chat-header">
-        <a href="{{ route('chat.index') }}" class="back-link">
+        <a href="<?php echo e(route('chat.index')); ?>" class="back-link">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
@@ -12,53 +11,55 @@
         </a>
         <div class="chat-user-info">
             <div class="chat-avatar">
-                {{ strtoupper(substr($otherUser->name, 0, 1)) }}
+                <?php echo e(strtoupper(substr($otherUser->name, 0, 1))); ?>
+
             </div>
             <div class="chat-user-details">
-                <h2 class="chat-user-name">{{ $otherUser->name }}</h2>
+                <h2 class="chat-user-name"><?php echo e($otherUser->name); ?></h2>
                 <div class="chat-offer-info">
-                    <span class="badge badge--{{ $conversation->offer->type === 'venta' ? 'sell' : 'buy' }}">
-                        {{ strtoupper($conversation->offer->type) }}
+                    <span class="badge badge--<?php echo e($conversation->offer->type === 'venta' ? 'sell' : 'buy'); ?>">
+                        <?php echo e(strtoupper($conversation->offer->type)); ?>
+
                     </span>
-                    <span class="chat-price">Bs. {{ number_format($conversation->offer->price, 2) }}</span>
+                    <span class="chat-price">Bs. <?php echo e(number_format($conversation->offer->price, 2)); ?></span>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="chat-messages" id="chatMessages">
-        @forelse($messages as $msg)
-            <div class="message {{ $msg['sender_id'] === auth()->id() ? 'message--sent' : 'message--received' }}" data-message-id="{{ $msg['id'] }}">
+        <?php $__empty_1 = true; $__currentLoopData = $messages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $msg): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+            <div class="message <?php echo e($msg['sender_id'] === auth()->id() ? 'message--sent' : 'message--received'); ?>" data-message-id="<?php echo e($msg['id']); ?>">
                 <div class="message-bubble">
-                    @if($msg['image_path'])
+                    <?php if($msg['image_path']): ?>
                         <div class="message-image">
-                            <img src="{{ asset('storage/' . $msg['image_path']) }}" alt="Imagen" onclick="window.open(this.src, '_blank')">
+                            <img src="<?php echo e(asset('storage/' . $msg['image_path'])); ?>" alt="Imagen" onclick="window.open(this.src, '_blank')">
                         </div>
-                    @endif
-                    @if($msg['content'])
-                        <div class="message-text">{{ $msg['content'] }}</div>
-                    @endif
+                    <?php endif; ?>
+                    <?php if($msg['content']): ?>
+                        <div class="message-text"><?php echo e($msg['content']); ?></div>
+                    <?php endif; ?>
                 </div>
                 <div class="message-meta">
-                    <span class="message-time">{{ \Carbon\Carbon::parse($msg['created_at'])->format('H:i') }}</span>
-                    @if($msg['sender_id'] === auth()->id())
+                    <span class="message-time"><?php echo e(\Carbon\Carbon::parse($msg['created_at'])->format('H:i')); ?></span>
+                    <?php if($msg['sender_id'] === auth()->id()): ?>
                         <span class="message-status">
-                            @if($msg['is_read'])
+                            <?php if($msg['is_read']): ?>
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <polyline points="20 6 9 17 4 12"></polyline>
                                 </svg>
                                 Leído
-                            @else
+                            <?php else: ?>
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <polyline points="20 6 9 17 4 12"></polyline>
                                 </svg>
                                 Enviado
-                            @endif
+                            <?php endif; ?>
                         </span>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
-        @empty
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
             <div class="chat-empty">
                 <div class="chat-empty-icon">
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -67,11 +68,11 @@
                 </div>
                 <p>No hay mensajes aún. ¡Inicia la conversación!</p>
             </div>
-        @endforelse
+        <?php endif; ?>
     </div>
 
-    <form method="POST" action="{{ route('chat.send', $conversation->id) }}" class="chat-form" id="chatForm" enctype="multipart/form-data">
-        @csrf
+    <form method="POST" action="<?php echo e(route('chat.send', $conversation->id)); ?>" class="chat-form" id="chatForm" enctype="multipart/form-data">
+        <?php echo csrf_field(); ?>
         <div class="chat-input-wrapper">
             <label for="imageInput" class="chat-attach-btn" title="Adjuntar imagen">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -95,9 +96,9 @@
         </div>
     </form>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const messagesContainer = document.getElementById('chatMessages');
@@ -110,9 +111,9 @@ document.addEventListener('DOMContentLoaded', function() {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
     // Auto-refresh cada 5 segundos para simular tiempo real
-    let lastMessageCount = {{ count($messages) }};
+    let lastMessageCount = <?php echo e(count($messages)); ?>;
     setInterval(function() {
-        fetch('{{ route("chat.messages", $conversation->id) }}')
+        fetch('<?php echo e(route("chat.messages", $conversation->id)); ?>')
             .then(response => response.json())
             .then(data => {
                 if (data.messages && data.messages.length !== lastMessageCount) {
@@ -154,7 +155,7 @@ function removeImage() {
     imagePreview.style.display = 'none';
 }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
 
 <style>
 :root {
@@ -479,3 +480,5 @@ function removeImage() {
     }
 }
 </style>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\collatech\dolarapp\resources\views/chat/show.blade.php ENDPATH**/ ?>
