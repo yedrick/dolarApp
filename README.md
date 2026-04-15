@@ -1,7 +1,7 @@
 # DólarApp
 
 > Plataforma de conversión y mercado de cambio de divisas para economías con múltiples tipos de cambio (Bolivia).
-> 
+>
 > **Nuevas funcionalidades**: Chat entre usuarios, sistema de reserva de montos, diseño mejorado con glassmorphism y animaciones suaves.
 
 [![CI/CD](https://github.com/tu-usuario/dolarapp/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/tu-usuario/dolarapp/actions)
@@ -119,26 +119,26 @@ app/
 
 ### Endpoints públicos
 
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| `GET`  | `/api/v1/exchange-rates` | Listar tipos de cambio |
-| `POST` | `/api/v1/exchange-rates/convert` | Convertir moneda |
-| `GET`  | `/api/v1/offers` | Ofertas activas |
-| `POST` | `/api/v1/register` | Registrar usuario |
-| `POST` | `/api/v1/login` | Iniciar sesión (obtener token) |
+| Método | Ruta                             | Descripción                    |
+| ------ | -------------------------------- | ------------------------------ |
+| `GET`  | `/api/v1/exchange-rates`         | Listar tipos de cambio         |
+| `POST` | `/api/v1/exchange-rates/convert` | Convertir moneda               |
+| `GET`  | `/api/v1/offers`                 | Ofertas activas                |
+| `POST` | `/api/v1/register`               | Registrar usuario              |
+| `POST` | `/api/v1/login`                  | Iniciar sesión (obtener token) |
 
 ### Endpoints protegidos (Bearer Token)
 
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| `POST`   | `/api/v1/offers` | Publicar oferta |
-| `GET`    | `/api/v1/offers/my` | Mis ofertas |
-| `DELETE` | `/api/v1/offers/{id}` | Cerrar oferta |
-| `POST`   | `/api/v1/logout` | Cerrar sesión |
+| Método   | Ruta                         | Descripción               |
+| -------- | ---------------------------- | ------------------------- |
+| `POST`   | `/api/v1/offers`             | Publicar oferta           |
+| `GET`    | `/api/v1/offers/my`          | Mis ofertas               |
+| `DELETE` | `/api/v1/offers/{id}`        | Cerrar oferta             |
+| `POST`   | `/api/v1/logout`             | Cerrar sesión             |
 | `GET`    | `/api/v1/chat/conversations` | Listar mis conversaciones |
-| `POST`   | `/api/v1/chat/start` | Iniciar conversación |
-| `GET`    | `/api/v1/chat/{id}/messages` | Obtener mensajes |
-| `POST`   | `/api/v1/chat/{id}/messages` | Enviar mensaje |
+| `POST`   | `/api/v1/chat/start`         | Iniciar conversación      |
+| `GET`    | `/api/v1/chat/{id}/messages` | Obtener mensajes          |
+| `POST`   | `/api/v1/chat/{id}/messages` | Enviar mensaje            |
 
 ### Ejemplo de uso
 
@@ -167,37 +167,33 @@ curl -X POST http://localhost:8000/api/v1/offers \
 
 ## Rutas web (vistas Blade)
 
-| Ruta | Descripción |
-|------|-------------|
-| `/` | Inicio con hero, conversor y últimas ofertas |
-| `/offers` | Mercado de ofertas (público) |
-| `/exchange-rates` | Tipos de cambio y conversor completo |
-| `/login` | Iniciar sesión |
-| `/register` | Crear cuenta |
-| `/dashboard` | Panel personal (requiere auth) |
-| `/offers/create` | Publicar nueva oferta (requiere auth) |
-| `/profile` | Perfil y configuración (requiere auth) |
-| `/chat` | Mis conversaciones (requiere auth) |
-| `/chat/{id}` | Ver conversación (requiere auth) |
+| Ruta              | Descripción                                  |
+| ----------------- | -------------------------------------------- |
+| `/`               | Inicio con hero, conversor y últimas ofertas |
+| `/offers`         | Mercado de ofertas (público)                 |
+| `/exchange-rates` | Tipos de cambio y conversor completo         |
+| `/login`          | Iniciar sesión                               |
+| `/register`       | Crear cuenta                                 |
+| `/dashboard`      | Panel personal (requiere auth)               |
+| `/offers/create`  | Publicar nueva oferta (requiere auth)        |
+| `/profile`        | Perfil y configuración (requiere auth)       |
+| `/chat`           | Mis conversaciones (requiere auth)           |
+| `/chat/{id}`      | Ver conversación (requiere auth)             |
 
 ---
 
 ## Características Principales
 
 ### Sistema de Chat
+
 - **Conversaciones privadas** entre compradores y vendedores
 - **Iniciar chat desde oferta**: Modal elegante con opciones de contacto (teléfono, WhatsApp, mensaje directo)
 - **Reserva automática de monto**: Al iniciar una conversación, el monto se reserva automáticamente
 - **Historial de mensajes**: Persistencia completa de todas las conversaciones
 - **Notificaciones**: Indicador visual de mensajes nuevos
 
-### Sistema de Reserva de Montos
-- **Monto disponible real**: Calculado como `amount - reserved_amount`
-- **Reserva automática**: Al contactar por X monto, se reserva y resta del disponible
-- **Visualización**: Barra de progreso mostrando % disponible en cada oferta
-- **Prevención de overbooking**: No se puede contactar por más monto del disponible
-
 ### Diseño UI/UX Mejorado
+
 - **Glassmorphism**: Navbar con efecto blur y transparencia
 - **Animaciones suaves**: Hover effects, elevación de tarjetas, transiciones fluidas
 - **Gradientes modernos**: Botones primarios con degradados, textos con gradiente
@@ -225,13 +221,13 @@ php artisan test --coverage --min=70
 
 ### Descripción de suites
 
-| Suite | Tests | Qué valida |
-|-------|-------|-----------|
-| Unit/Domain | 28 | Money, ExchangeRateType, conversiones, creación de Offer, eventos |
-| Unit/Application | 9 | Use Cases con repositorios mockeados |
-| Feature/Api | 10 | Flujo completo API REST con BD en memoria |
-| Feature/Web | 22 | Vistas Blade, autenticación sesión, formularios |
-| Acceptance | 5 | Escenarios de negocio narrados (Carlos publica, María visualiza) |
+| Suite            | Tests | Qué valida                                                        |
+| ---------------- | ----- | ----------------------------------------------------------------- |
+| Unit/Domain      | 28    | Money, ExchangeRateType, conversiones, creación de Offer, eventos |
+| Unit/Application | 9     | Use Cases con repositorios mockeados                              |
+| Feature/Api      | 10    | Flujo completo API REST con BD en memoria                         |
+| Feature/Web      | 22    | Vistas Blade, autenticación sesión, formularios                   |
+| Acceptance       | 5     | Escenarios de negocio narrados (Carlos publica, María visualiza)  |
 
 ---
 
@@ -258,8 +254,8 @@ php artisan db:seed
 El archivo `.github/workflows/ci-cd.yml` implementa:
 
 ```
-Commit → composer install → Pint (lint) → PHPStan → 
-Unit Tests → Integration Tests → Web Tests → Acceptance Tests → 
+Commit → composer install → Pint (lint) → PHPStan →
+Unit Tests → Integration Tests → Web Tests → Acceptance Tests →
 Deploy automático (solo en rama main)
 ```
 
@@ -267,26 +263,26 @@ Deploy automático (solo en rama main)
 
 ## Principios SOLID aplicados
 
-| Principio | Ejemplo en el código |
-|-----------|---------------------|
-| **SRP** | `ExchangeRate` solo calcula conversiones; `EloquentExchangeRateRepository` solo persiste |
-| **OCP** | Nuevos tipos de cambio sin modificar `ExchangeRateType` (agregar constante) |
-| **LSP** | `EloquentOfferRepository` es intercambiable con cualquier otra implementación |
-| **ISP** | `OfferRepositoryInterface` solo define métodos necesarios para ofertas |
-| **DIP** | Domain depende de interfaces; Infrastructure las implementa |
+| Principio | Ejemplo en el código                                                                     |
+| --------- | ---------------------------------------------------------------------------------------- |
+| **SRP**   | `ExchangeRate` solo calcula conversiones; `EloquentExchangeRateRepository` solo persiste |
+| **OCP**   | Nuevos tipos de cambio sin modificar `ExchangeRateType` (agregar constante)              |
+| **LSP**   | `EloquentOfferRepository` es intercambiable con cualquier otra implementación            |
+| **ISP**   | `OfferRepositoryInterface` solo define métodos necesarios para ofertas                   |
+| **DIP**   | Domain depende de interfaces; Infrastructure las implementa                              |
 
 ---
 
 ## Calidad ISO/IEC 25010
 
-| Característica | Implementación |
-|---------------|----------------|
-| Funcionalidad | Casos de uso con validaciones de dominio |
-| Fiabilidad | 89 pruebas en 3 niveles con BD en memoria |
-| Usabilidad | API REST con mensajes en español, vistas Blade responsive |
-| Seguridad | Sanctum tokens, Form Requests, CSRF, sesión cifrada |
-| Mantenibilidad | DDD, SOLID, separación estricta de capas |
-| Portabilidad | SQLite/MySQL/PostgreSQL configurables en `.env` |
+| Característica | Implementación                                            |
+| -------------- | --------------------------------------------------------- |
+| Funcionalidad  | Casos de uso con validaciones de dominio                  |
+| Fiabilidad     | 89 pruebas en 3 niveles con BD en memoria                 |
+| Usabilidad     | API REST con mensajes en español, vistas Blade responsive |
+| Seguridad      | Sanctum tokens, Form Requests, CSRF, sesión cifrada       |
+| Mantenibilidad | DDD, SOLID, separación estricta de capas                  |
+| Portabilidad   | SQLite/MySQL/PostgreSQL configurables en `.env`           |
 
 ---
 
@@ -308,12 +304,14 @@ Deploy automático (solo en rama main)
 ## Changelog Reciente
 
 ### v1.1.0 - Chat y Reserva de Montos
+
 - Sistema de mensajes entre usuarios con persistencia
 - Reserva automática de montos al contactar
 - Modal de contacto elegante con WhatsApp y teléfono
 - Barra de progreso visualizando disponibilidad
 
 ### v1.0.1 - Rediseño UI/UX
+
 - Glassmorphism en navbar
 - Animaciones suaves en todas las interacciones
 - Gradientes modernos en botones y textos
