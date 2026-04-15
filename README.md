@@ -278,24 +278,5 @@ Deploy automático (solo en rama main)
 
 ---
 
-## Changelog Reciente
-
-### v1.1.0 - Chat y Reserva de Montos
-
-- Sistema de mensajes entre usuarios con persistencia
-- Reserva automática de montos al contactar
-- Modal de contacto elegante con WhatsApp y teléfono
-- Barra de progreso visualizando disponibilidad
-
-### v1.0.1 - Rediseño UI/UX
-
-- Glassmorphism en navbar
-- Animaciones suaves en todas las interacciones
-- Gradientes modernos en botones y textos
-- Iconos SVG integrados
-- Mejoras visuales en tarjetas de ofertas
-- Dashboard rediseñado con stats cards
-
----
 
 **Desarrollado para facilitar el cambio de divisas en Bolivia**
