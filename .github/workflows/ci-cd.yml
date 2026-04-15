@@ -1,0 +1,167 @@
+name: DólarApp CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  # ────────────────────────────────────────────────────────────────
+  # JOB 1: Build y pruebas (corre en cada commit/PR)
+  # ────────────────────────────────────────────────────────────────
+  test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    services:
+      # Base de datos para pruebas de integración
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: secret
+          MYSQL_DATABASE: dolarapp_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      # ── 1. Checkout ─────────────────────────────────────────────
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      # ── 2. PHP Setup ────────────────────────────────────────────
+      - name: Configurar PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, pdo, pdo_mysql, pdo_sqlite, redis, pcov
+          coverage: pcov
+
+      # ── 3. Cache de dependencias ─────────────────────────────────
+      - name: Cache Composer
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      # ── 4. Instalar dependencias ─────────────────────────────────
+      - name: Instalar dependencias PHP
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      # ── 5. Preparar entorno ──────────────────────────────────────
+      - name: Configurar entorno de pruebas
+        run: |
+          cp .env.example .env.testing
+          php artisan key:generate --env=testing
+
+      # ── 6. Lint con Laravel Pint ─────────────────────────────────
+      - name: Lint - Laravel Pint
+        run: ./vendor/bin/pint --test
+        continue-on-error: false
+
+      # ── 7. Análisis estático PHPStan ─────────────────────────────
+      - name: Static Analysis - PHPStan
+        run: ./vendor/bin/phpstan analyse app --level=5 --no-progress
+        continue-on-error: true
+
+      # ── 8. Pruebas unitarias (sin BD) ────────────────────────────
+      - name: Pruebas Unitarias
+        run: |
+          php artisan test --testsuite=Unit \
+            --coverage-text \
+            --min=70 \
+            --colors=always
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ":memory:"
+
+      # ── 9. Ejecutar migraciones para pruebas de integración ──────
+      - name: Migrar base de datos de pruebas
+        run: php artisan migrate --env=testing --force
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: dolarapp_test
+          DB_USERNAME: root
+          DB_PASSWORD: secret
+
+      # ── 10. Pruebas de integración ───────────────────────────────
+      - name: Pruebas de Integración
+        run: |
+          php artisan test --testsuite=Feature --colors=always
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: dolarapp_test
+          DB_USERNAME: root
+          DB_PASSWORD: secret
+
+      # ── 11. Pruebas de aceptación ────────────────────────────────
+      - name: Pruebas de Aceptación
+        run: |
+          php artisan test --testsuite=Acceptance --colors=always
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: dolarapp_test
+          DB_USERNAME: root
+          DB_PASSWORD: secret
+
+      # ── 12. Reporte de cobertura ─────────────────────────────────
+      - name: Upload cobertura a Codecov
+        uses: codecov/codecov-action@v3
+        if: success()
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: false
+
+  # ────────────────────────────────────────────────────────────────
+  # JOB 2: Despliegue automático (solo en main, si tests pasan)
+  # ────────────────────────────────────────────────────────────────
+  deploy:
+    name: Deploy a Producción
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Deploy a Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          npm install -g @railway/cli
+          railway up --service dolarapp-api
+
+      # Alternativa: despliegue vía SSH a VPS propio
+      # - name: Deploy vía SSH
+      #   uses: appleboy/ssh-action@v1
+      #   with:
+      #     host: ${{ secrets.SERVER_HOST }}
+      #     username: ${{ secrets.SERVER_USER }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     script: |
+      #       cd /var/www/dolarapp
+      #       git pull origin main
+      #       composer install --no-dev --optimize-autoloader
+      #       php artisan migrate --force
+      #       php artisan config:cache
+      #       php artisan route:cache
+      #       php artisan view:cache
+      #       php artisan queue:restart
+      #       sudo systemctl reload php8.2-fpm
+
+      - name: Notificar deploy exitoso
+        if: success()
+        run: echo "✅ DólarApp desplegada correctamente en producción."
