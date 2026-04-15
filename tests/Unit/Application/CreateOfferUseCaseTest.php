@@ -35,16 +35,17 @@ class CreateOfferUseCaseTest extends TestCase
         $this->repo->method('countActiveByUser')->willReturn(0);
         $this->repo->method('save')->willReturnCallback(
             fn (Offer $offer) => Offer::reconstitute(
-                id:          99,
-                userId:      $offer->userId(),
-                type:        $offer->type()->value(),
-                price:       $offer->price()->amount(),
-                amount:      $offer->amount(),
-                status:      $offer->status()->value(),
-                contactInfo: $offer->contactInfo(),
-                notes:       $offer->notes(),
-                createdAt:   new DateTimeImmutable(),
-                updatedAt:   new DateTimeImmutable(),
+                id:             99,
+                userId:         $offer->userId(),
+                type:           $offer->type()->value(),
+                price:          $offer->price()->amount(),
+                amount:         $offer->amount(),
+                reservedAmount: $offer->reservedAmount(),
+                status:         $offer->status()->value(),
+                contactInfo:    $offer->contactInfo(),
+                notes:          $offer->notes(),
+                createdAt:      new DateTimeImmutable(),
+                updatedAt:      new DateTimeImmutable(),
             )
         );
 
@@ -91,7 +92,7 @@ class CreateOfferUseCaseTest extends TestCase
             ->method('save')
             ->willReturnCallback(fn (Offer $o) => Offer::reconstitute(
                 1, $o->userId(), $o->type()->value(),
-                $o->price()->amount(), $o->amount(),
+                $o->price()->amount(), $o->amount(), $o->reservedAmount(),
                 $o->status()->value(), null, null,
                 new DateTimeImmutable(), new DateTimeImmutable(),
             ));
@@ -105,7 +106,7 @@ class CreateOfferUseCaseTest extends TestCase
         $this->repo->method('save')->willReturnCallback(
             fn (Offer $o) => Offer::reconstitute(
                 5, $o->userId(), $o->type()->value(),
-                $o->price()->amount(), $o->amount(),
+                $o->price()->amount(), $o->amount(), $o->reservedAmount(),
                 'activa', null, null,
                 new DateTimeImmutable(), new DateTimeImmutable(),
             )

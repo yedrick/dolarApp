@@ -23,7 +23,7 @@
 
 ```bash
 # Clonar el repositorio
-git clone https://github.com/tu-usuario/dolarapp.git
+git clone https://github.com/yedrick/dolarApp.git
 cd dolarapp
 
 # Instalar dependencias PHP
