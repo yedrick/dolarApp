@@ -89,9 +89,9 @@
                 <div class="form-group" style="flex:1; min-width: 180px;">
                     <label class="form-label">Tipo de cambio</label>
                     <select id="conv-type" class="form-input form-select form-input--lg">
-                        <option value="oficial">💙 Oficial</option>
-                        <option value="paralelo" selected>❤️ Paralelo</option>
-                        <option value="librecambista">💚 Librecambista</option>
+                        <option value="oficial">Oficial</option>
+                        <option value="paralelo" selected>Paralelo</option>
+                        <option value="librecambista">Librecambista</option>
                     </select>
                 </div>
                 <div class="converter-action" style="min-width: 140px;">
