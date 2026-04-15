@@ -90,6 +90,8 @@
                                 </p>
                                 <?php if(!$conv['last_message']['is_read'] && !$conv['last_message']['is_mine']): ?>
                                     <span class="unread-badge">Nuevo</span>
+                                <?php elseif(!$conv['last_message']['is_read'] && $conv['last_message']['is_mine']): ?>
+                                    <span class="unread-badge unread-badge--sent">No leído</span>
                                 <?php endif; ?>
                             <?php else: ?>
                                 <p class="conversation-message conversation-message--empty">Sin mensajes aún</p>
@@ -330,6 +332,12 @@
     border-radius: 999px;
     flex-shrink: 0;
     animation: pulse 2s infinite;
+}
+
+.unread-badge--sent {
+    background: var(--color-text-hint);
+    animation: none;
+    font-weight: 500;
 }
 
 @keyframes pulse {

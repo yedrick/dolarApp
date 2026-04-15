@@ -14,8 +14,8 @@ Artisan::command('inspire', function () {
 |--------------------------------------------------------------------------
 */
 
-// Actualizar tipos de cambio cada hora (si se conecta a una API externa)
-// Schedule::command('rates:update')->hourly();
+// Actualizar tipos de cambio desde API cada 30 minutos
+Schedule::command('rates:fetch')->everyThirtyMinutes();
 
 // Expirar ofertas con más de 72 horas cada día a medianoche
-// Schedule::command('offers:expire')->dailyAt('00:00');
+Schedule::command('offers:expire')->dailyAt('00:00');
