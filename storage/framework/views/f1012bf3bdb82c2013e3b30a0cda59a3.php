@@ -6,14 +6,14 @@
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     <title><?php echo $__env->yieldContent('title', 'DólarApp'); ?> — Mercado de Cambio Bolivia</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo e(asset('css/app.css')); ?>">
     <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 <body>
 
 
-<nav class="navbar">
+<nav class="navbar" id="navbar">
     <div class="container navbar__inner">
         <a href="<?php echo e(route('dashboard')); ?>" class="navbar__brand">
             <span class="brand-icon">$</span>
@@ -74,6 +74,26 @@
     </div>
 </footer>
 
+<script>
+    // Efecto scroll en navbar
+    window.addEventListener('scroll', () => {
+        const navbar = document.getElementById('navbar');
+        if (window.scrollY > 10) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    // Auto-hide flash messages
+    setTimeout(() => {
+        document.querySelectorAll('.flash').forEach(f => {
+            f.style.opacity = '0';
+            f.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => f.remove(), 500);
+        });
+    }, 5000);
+</script>
 <script src="<?php echo e(asset('js/app.js')); ?>"></script>
 <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
