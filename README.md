@@ -180,29 +180,6 @@ curl -X POST http://localhost:8000/api/v1/offers \
 | `/chat`           | Mis conversaciones (requiere auth)           |
 | `/chat/{id}`      | Ver conversación (requiere auth)             |
 
----
-
-## Características Principales
-
-### Sistema de Chat
-
-- **Conversaciones privadas** entre compradores y vendedores
-- **Iniciar chat desde oferta**: Modal elegante con opciones de contacto (teléfono, WhatsApp, mensaje directo)
-- **Reserva automática de monto**: Al iniciar una conversación, el monto se reserva automáticamente
-- **Historial de mensajes**: Persistencia completa de todas las conversaciones
-- **Notificaciones**: Indicador visual de mensajes nuevos
-
-### Diseño UI/UX Mejorado
-
-- **Glassmorphism**: Navbar con efecto blur y transparencia
-- **Animaciones suaves**: Hover effects, elevación de tarjetas, transiciones fluidas
-- **Gradientes modernos**: Botones primarios con degradados, textos con gradiente
-- **Iconos SVG**: Integrados en botones y acciones
-- **Responsive**: Adaptable a todos los dispositivos
-- **Modal elegante**: Animaciones de entrada, cierre con ESC o click fuera
-
----
-
 ## Ejecutar pruebas
 
 ```bash
